@@ -1,0 +1,55 @@
+{
+  "name": "nenenesor",
+  "version": "0.1.0",
+  "description": "nenenesor.com — Önce nene'ne sor.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
+    "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
+    "lint": "next lint",
+    "generate:types": "payload generate:types",
+    "generate:importmap": "payload generate:importmap",
+    "payload": "payload"
+  },
+  "dependencies": {
+    "@payloadcms/db-postgres": "^3.59.1",
+    "@payloadcms/next": "^3.59.1",
+    "@payloadcms/richtext-lexical": "^3.59.1",
+    "@payloadcms/storage-s3": "^3.59.1",
+    "@payloadcms/ui": "^3.59.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cross-env": "^7.0.3",
+    "date-fns": "^4.1.0",
+    "graphql": "^16.11.0",
+    "lucide-react": "^0.469.0",
+    "next": "15.4.4",
+    "payload": "^3.59.1",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-hook-form": "^7.54.2",
+    "resend": "^4.1.2",
+    "sharp": "0.34.2",
+    "tailwind-merge": "^2.6.0",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/node": "^22.10.5",
+    "@types/react": "19.1.8",
+    "@types/react-dom": "19.1.6",
+    "eslint": "^9.18.0",
+    "eslint-config-next": "15.4.4",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^4.0.0",
+    "typescript": "5.7.3"
+  },
+  "engines": {
+    "node": "^18.20.2 || >=20.9.0",
+    "pnpm": "^9 || ^10 || ^11"
+  }
+}

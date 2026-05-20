@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/Ekrem/Desktop/**)",
+      "Bash(pnpm create *)",
+      "Bash(pnpm install *)",
+      "Bash(pnpm approve-builds *)",
+      "Bash(pnpm build *)",
+      "Bash(pnpm lint *)",
+      "Bash(claude mcp *)",
+      "Bash(pnpm dev *)",
+      "Bash(powershell -Command \"Stop-Process -Id 17988 -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 500; Write-Output 'done'\")",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} in %{time_total}s\\\\n\" -L http://localhost:3001/admin)",
+      "PowerShell($ports = @\\(3000, 3001\\); foreach \\($p in $ports\\) { $conns = Get-NetTCPConnection -LocalPort $p -ErrorAction SilentlyContinue; foreach \\($c in $conns\\) { try { Stop-Process -Id $c.OwningProcess -Force -ErrorAction Stop } catch {} } }; Start-Sleep -Milliseconds 800; 'cleared')",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} in %{time_total}s\\\\n\" http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} in %{time_total}s\\\\n\" http://localhost:3000/blog)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} in %{time_total}s\\\\n\" \"http://localhost:3000/blog/emzirme-doneminde-annenin-tabaginda-ne-olmali\")",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} in %{time_total}s\\\\n\" http://localhost:3000/blog/kategori/0-6-ay)",
+      "Bash(curl -s http://localhost:3000/)",
+      "Bash(grep -oE \"Emzirme döneminde|Doğum çantasında|Bebeğim ateşlendi|Ayşe Yıldız|Hatice Demir|Dr\\\\\\\\. Mehmet|Bu hafta nene|Nasıl çalışıyor\")",
+      "Bash(curl -s http://localhost:3000/blog)",
+      "Bash(curl -s \"http://localhost:3000/urunler/dogum-cantasinda-nene-ile-uzmanin-anlastigi-6-sey\")",
+      "PowerShell($ports = @\\(3000, 3001\\); foreach \\($p in $ports\\) { $conns = Get-NetTCPConnection -LocalPort $p -ErrorAction SilentlyContinue; foreach \\($c in $conns\\) { try { Stop-Process -Id $c.OwningProcess -Force -ErrorAction Stop } catch {} } }; 'done')",
+      "Bash(git init *)",
+      "Bash(git config *)",
+      "Bash(git symbolic-ref *)",
+      "Bash(git add *)"
+    ]
+  }
+}
