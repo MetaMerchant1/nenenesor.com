@@ -3,7 +3,7 @@ import type { CollectionAfterChangeHook, CollectionConfig } from 'payload'
 
 import { autoSlugFrom } from '@/lib/slug'
 
-const revalidateOnPublish: CollectionAfterChangeHook = ({
+const revalidateOnPublish: CollectionAfterChangeHook = async ({
   doc,
   previousDoc,
   req,
@@ -16,11 +16,19 @@ const revalidateOnPublish: CollectionAfterChangeHook = ({
     revalidatePath('/blog')
     revalidatePath('/')
     if (d.slug) revalidatePath(`/blog/${d.slug}`)
-    const cat = d.category
-    const catSlug =
-      cat && typeof cat === 'object' && 'slug' in cat
-        ? (cat as { slug?: string }).slug
-        : undefined
+    
+    let catSlug: string | undefined
+    if (d.category) {
+      if (typeof d.category === 'object' && 'slug' in d.category) {
+        catSlug = (d.category as { slug?: string }).slug
+      } else {
+        const categoryDoc = await req.payload.findByID({
+          collection: 'categories',
+          id: d.category as string | number,
+        })
+        catSlug = categoryDoc?.slug
+      }
+    }
     if (catSlug) revalidatePath(`/blog/kategori/${catSlug}`)
   } catch {
     /* revalidate only works outside render contexts; ignore here */

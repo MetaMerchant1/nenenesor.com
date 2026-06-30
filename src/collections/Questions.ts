@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache'
 import type {
   Access,
   CollectionAfterChangeHook,
@@ -56,6 +57,14 @@ const notifyOnPublish: CollectionAfterChangeHook = async ({
   }
   const prev = previousDoc as { status?: string } | undefined
   if (d.status === 'published' && prev?.status !== 'published') {
+    try {
+      revalidatePath('/sorular')
+      revalidatePath('/')
+      if (d.slug) revalidatePath(`/sorular/${d.slug}`)
+    } catch {
+      // ignore
+    }
+
     if (d.askerEmail) {
       try {
         await sendQuestionAnsweredEmail({
