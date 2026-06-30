@@ -8,11 +8,11 @@ export async function subscribeToNewsletter(args: {
 }): Promise<{ ok: boolean; reason?: string }> {
   const apiKey = process.env.MAILERLITE_API_KEY
   const groupId = process.env.MAILERLITE_GROUP_ID
-  if (!apiKey) {
+  if (!apiKey || apiKey.startsWith('mock')) {
     if (process.env.NODE_ENV === 'production') {
       return { ok: false, reason: 'newsletter_not_configured' }
     }
-    console.log('[mailerlite:dev] Subscriber skipped:', args.email)
+    console.log('[mailerlite:dev] Subscriber skipped (mock key used):', args.email)
     return { ok: true }
   }
 

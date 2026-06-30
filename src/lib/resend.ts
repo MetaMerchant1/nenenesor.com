@@ -7,7 +7,7 @@ let cached: Resend | null = null
 function getClient(): Resend | null {
   if (cached) return cached
   const key = process.env.RESEND_API_KEY
-  if (!key) return null
+  if (!key || key.startsWith('re_mock') || key.includes('mock')) return null
   cached = new Resend(key)
   return cached
 }
