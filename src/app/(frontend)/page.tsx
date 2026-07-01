@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 
 import { ExpertBadge } from '@/components/ExpertBadge'
@@ -244,14 +245,15 @@ export default async function HomePage() {
               </div>
               <div className="relative min-h-[260px] bg-nene-mist/50 md:min-h-0">
                 {featuredProduct.items?.[0]?.image?.url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={featuredProduct.items[0].image.url}
                     alt={
                       featuredProduct.items[0].image.alt ??
                       featuredProduct.title
                     }
-                    className="absolute inset-0 h-full w-full object-cover"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center font-serif text-4xl text-nene-ink/20">
