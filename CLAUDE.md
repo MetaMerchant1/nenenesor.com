@@ -359,14 +359,19 @@ NEXT_PUBLIC_PLAUSIBLE_DOMAIN=nenenesor.com
 
 - ❌ User accounts for mothers (only experts/admins log in)
 - ❌ Shopping cart, checkout, payments, inventory
-- ❌ Forum, comments, threaded discussions
+- ❌ Forum, threaded discussions
 - ❌ Mobile app
 - ❌ Live chat with experts, video consultation
 - ❌ Multi-language (Turkish only in MVP)
-- ❌ Wishlist, favorites, "save for later"
 - ❌ Push notifications, web push
 - ❌ Social login
 - ❌ Gamification, badges, points
+
+**Scope exceptions (added 2026-07-03):** post engagement UI — like, comment,
+save/bookmark, and share buttons on blog posts (`<PostActions>`). Frontend-only
+for now (localStorage state, comments section is a placeholder); backend will
+be added later. Flat comments on posts are allowed when that backend lands —
+forum/threaded discussions remain out of scope.
 
 If user asks for anything in this list, **push back** and confirm before adding scope.
 
