@@ -1,8 +1,8 @@
 'use client'
 
-import { Menu, X } from 'lucide-react'
+import { LogIn, LogOut, Menu, X } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 const NAV = [
@@ -16,10 +16,18 @@ const NAV = [
 
 const MOBILE_MENU_ID = 'mobile-nav-menu'
 
-export function Header() {
+type AuthUser = { name: string; role: 'admin' | 'editor' | 'expert' }
+
+export function Header({ user }: { user: AuthUser | null }) {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
+  const router = useRouter()
+
+  async function handleLogout() {
+    await fetch('/api/users/logout', { method: 'POST' })
+    router.refresh()
+  }
 
   const close = useCallback(() => setIsOpen(false), [])
 
@@ -83,6 +91,37 @@ export function Header() {
           >
             Soru Sor
           </Link>
+
+          <div className="h-5 w-px bg-nene-mist" aria-hidden="true" />
+
+          {user ? (
+            <div className="flex items-center gap-3">
+              <Link
+                href="/admin"
+                className="text-sm text-nene-ink/70 hover:text-nene-ink no-underline"
+                title={user.role}
+              >
+                {user.name}
+              </Link>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex items-center gap-1 text-sm text-nene-ink/60 hover:text-nene-rust"
+                aria-label="Çıkış yap"
+              >
+                <LogOut size={15} />
+                Çıkış
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/admin/login"
+              className="flex items-center gap-1.5 text-sm text-nene-ink/70 hover:text-nene-ink no-underline"
+            >
+              <LogIn size={15} />
+              Giriş
+            </Link>
+          )}
         </nav>
 
         {/* Mobile: hamburger toggle */}
@@ -146,6 +185,35 @@ export function Header() {
           >
             Soru Sor
           </Link>
+
+          {user ? (
+            <>
+              <Link
+                href="/admin"
+                onClick={close}
+                className="mx-4 rounded-md px-4 py-3 text-sm text-nene-ink/70 no-underline hover:bg-nene-mist/50"
+              >
+                {user.name} ({user.role})
+              </Link>
+              <button
+                type="button"
+                onClick={() => { close(); handleLogout() }}
+                className="mx-4 mb-2 flex items-center gap-2 rounded-md px-4 py-3 text-sm text-nene-rust hover:bg-nene-mist/50"
+              >
+                <LogOut size={15} />
+                Çıkış Yap
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/admin/login"
+              onClick={close}
+              className="mx-4 mb-2 flex items-center gap-2 rounded-md px-4 py-3 text-sm text-nene-ink/70 no-underline hover:bg-nene-mist/50"
+            >
+              <LogIn size={15} />
+              Giriş Yap
+            </Link>
+          )}
         </div>
       </div>
     </header>

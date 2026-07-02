@@ -6,6 +6,7 @@ import Script from 'next/script'
 
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
+import { getCurrentUser } from '@/lib/auth'
 import { SITE_NAME, SITE_TAGLINE, SITE_URL } from '@/lib/utils'
 
 const PLAUSIBLE_DOMAIN = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN
@@ -41,11 +42,13 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
 }
 
-export default function FrontendLayout({
+export default async function FrontendLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const user = await getCurrentUser().catch(() => null)
+
   return (
     <html lang="tr" className={`${fraunces.variable} ${inter.variable}`}>
       <body>
@@ -57,7 +60,7 @@ export default function FrontendLayout({
             strategy="afterInteractive"
           />
         ) : null}
-        <Header />
+        <Header user={user ? { name: user.name, role: user.role } : null} />
         <main className="min-h-[60vh]">{children}</main>
         <Footer />
       </body>
