@@ -17,12 +17,15 @@ export default async function AskQuestionPage() {
   const payload = await getPayload()
   const categoriesRes = await payload.find({
     collection: 'categories',
-    limit: 50,
+    limit: 100,
     sort: 'name',
+    depth: 1,
   })
   const categories = categoriesRes.docs as unknown as {
+    id: number
     slug: string
     name: string
+    parent?: number | { id: number; slug: string; name: string } | null
   }[]
 
   return (

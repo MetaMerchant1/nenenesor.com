@@ -1,6 +1,8 @@
 import { revalidatePath } from 'next/cache'
 import type { CollectionAfterChangeHook, CollectionConfig } from 'payload'
 
+import { isAdmin } from '@/access/isAdmin'
+import { isAdminOrEditor } from '@/access/isAdminOrEditor'
 import { autoSlugFrom } from '@/lib/slug'
 
 const revalidateOnPublish: CollectionAfterChangeHook = ({
@@ -26,17 +28,16 @@ export const Products: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'author', 'category', 'status', 'publishedAt'],
+    group: 'İçerik Yönetimi',
   },
   access: {
     read: ({ req: { user } }) => {
       if (user?.role === 'admin' || user?.role === 'editor') return true
       return { status: { equals: 'published' } }
     },
-    create: ({ req: { user } }) =>
-      user?.role === 'admin' || user?.role === 'editor',
-    update: ({ req: { user } }) =>
-      user?.role === 'admin' || user?.role === 'editor',
-    delete: ({ req: { user } }) => user?.role === 'admin',
+    create: isAdminOrEditor,
+    update: isAdminOrEditor,
+    delete: isAdmin,
   },
   hooks: {
     afterChange: [revalidateOnPublish],

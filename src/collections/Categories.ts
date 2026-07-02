@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { isAdmin } from '@/access/isAdmin'
+import { isAdminOrEditor } from '@/access/isAdminOrEditor'
 import { autoSlugFrom } from '@/lib/slug'
 
 export const Categories: CollectionConfig = {
@@ -7,14 +9,13 @@ export const Categories: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'slug', 'parent'],
+    group: 'Sistem',
   },
   access: {
     read: () => true,
-    create: ({ req: { user } }) =>
-      user?.role === 'admin' || user?.role === 'editor',
-    update: ({ req: { user } }) =>
-      user?.role === 'admin' || user?.role === 'editor',
-    delete: ({ req: { user } }) => user?.role === 'admin',
+    create: isAdminOrEditor,
+    update: isAdminOrEditor,
+    delete: isAdmin,
   },
   fields: [
     {

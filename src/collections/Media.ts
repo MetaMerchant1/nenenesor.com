@@ -1,15 +1,17 @@
 import type { CollectionConfig } from 'payload'
 
+import { isAdminOrEditor } from '@/access/isAdminOrEditor'
+
 export const Media: CollectionConfig = {
   slug: 'media',
+  admin: {
+    group: 'Sistem',
+  },
   access: {
     read: () => true,
-    create: ({ req: { user } }) =>
-      user?.role === 'admin' || user?.role === 'editor',
-    update: ({ req: { user } }) =>
-      user?.role === 'admin' || user?.role === 'editor',
-    delete: ({ req: { user } }) =>
-      user?.role === 'admin' || user?.role === 'editor',
+    create: isAdminOrEditor,
+    update: isAdminOrEditor,
+    delete: isAdminOrEditor,
   },
   upload: {
     staticDir: 'media',

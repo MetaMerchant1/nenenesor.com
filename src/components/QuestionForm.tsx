@@ -23,8 +23,15 @@ const Schema = z.object({
 
 type FormValues = z.infer<typeof Schema>
 
+interface CategoryItem {
+  id: number
+  slug: string
+  name: string
+  parent?: number | { id: number; slug: string; name: string } | null
+}
+
 interface QuestionFormProps {
-  categories: { slug: string; name: string }[]
+  categories: CategoryItem[]
 }
 
 declare global {
@@ -60,9 +67,27 @@ export function QuestionForm({ categories }: QuestionFormProps) {
     handleSubmit,
     watch,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: { name: '', email: '', category: '', question: '' },
+  })
+
+  // Find all main categories (no parent)
+  const mainCategories = categories.filter((c) => !c.parent)
+
+  // State for selected main category slug
+  const [selectedMainCategorySlug, setSelectedMainCategorySlug] = useState<string>('')
+
+  // Find subcategories for the selected main category
+  const subCategories = categories.filter((c) => {
+    if (!c.parent) return false
+    const parentId = typeof c.parent === 'object' ? c.parent.id : c.parent
+    const parentSlug =
+      typeof c.parent === 'object'
+        ? c.parent.slug
+        : categories.find((cat) => cat.id === parentId)?.slug
+    return parentSlug === selectedMainCategorySlug
   })
 
   const questionLen = watch('question')?.length ?? 0
@@ -95,10 +120,15 @@ export function QuestionForm({ categories }: QuestionFormProps) {
     setErrorMessage(null)
     try {
       const parsed = Schema.parse(values)
+      const categorySlug = parsed.category || selectedMainCategorySlug
       const res = await fetch('/api/soru', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...parsed, turnstileToken: tsToken }),
+        body: JSON.stringify({
+          ...parsed,
+          category: categorySlug || undefined,
+          turnstileToken: tsToken,
+        }),
       })
       const data = (await res.json()) as { ok: boolean; reason?: string }
       if (!res.ok || !data.ok) {
@@ -112,6 +142,7 @@ export function QuestionForm({ categories }: QuestionFormProps) {
       }
       setSubmitState('success')
       reset()
+      setSelectedMainCategorySlug('')
       setTsToken(null)
       if (widgetIdRef.current && window.turnstile) {
         window.turnstile.reset(widgetIdRef.current)
@@ -186,21 +217,46 @@ export function QuestionForm({ categories }: QuestionFormProps) {
           </Field>
         </div>
 
-        <Field id={`${formId}-category`} label="Kategori (isteğe bağlı)">
-          <select
-            {...register('category')}
+        <div className="grid gap-5 md:grid-cols-2">
+          <Field id={`${formId}-main-category`} label="Dönem / Ana Kategori (isteğe bağlı)">
+            <select
+              id={`${formId}-main-category`}
+              className={inputCls}
+              value={selectedMainCategorySlug}
+              onChange={(e) => {
+                setSelectedMainCategorySlug(e.target.value)
+                setValue('category', '')
+              }}
+            >
+              <option value="">Seçim yapın</option>
+              {mainCategories.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          <Field
             id={`${formId}-category`}
-            className={inputCls}
-            defaultValue=""
+            label="Alt Kategori (isteğe bağlı)"
           >
-            <option value="">Seçim yapma</option>
-            {categories.map((c) => (
-              <option key={c.slug} value={c.slug}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </Field>
+            <select
+              {...register('category')}
+              id={`${formId}-category`}
+              className={`${inputCls} disabled:cursor-not-allowed disabled:opacity-50`}
+              disabled={!selectedMainCategorySlug}
+              defaultValue=""
+            >
+              <option value="">Alt Kategori Seçin</option>
+              {subCategories.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </Field>
+        </div>
 
         <Field
           id={`${formId}-q`}

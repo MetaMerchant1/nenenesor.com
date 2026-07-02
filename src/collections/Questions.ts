@@ -5,6 +5,7 @@ import type {
   CollectionConfig,
 } from 'payload'
 
+import { isAdmin } from '@/access/isAdmin'
 import { sendQuestionAnsweredEmail } from '@/lib/resend'
 import { autoSlugFrom } from '@/lib/slug'
 
@@ -91,12 +92,13 @@ export const Questions: CollectionConfig = {
       'category',
       'publishedAt',
     ],
+    group: 'İçerik Yönetimi',
   },
   access: {
     create: () => true, // public via /api/soru (Turnstile guards in route)
     read: readAccess,
     update: updateAccess,
-    delete: ({ req: { user } }) => user?.role === 'admin',
+    delete: isAdmin,
   },
   hooks: {
     afterChange: [notifyOnPublish],

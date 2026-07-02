@@ -4,12 +4,50 @@ import { doc, h, p, ul } from './lexical'
 import { slugify } from './slug'
 
 const DEFAULT_CATEGORIES = [
-  { name: 'Hamilelik', description: 'Gebelik süreci, doğum öncesi bakım, beslenme ve psikoloji.' },
-  { name: '0-6 Ay', description: 'Yenidoğan bakımı, ilk aylar, emzirme, uyku.' },
-  { name: '6-12 Ay', description: 'Ek gıdaya geçiş, gelişim, ilk dişler.' },
-  { name: '1-3 Yaş', description: 'Yürüme, konuşma, oyun, beslenme alışkanlıkları.' },
-  { name: 'Anne Sağlığı', description: 'Doğum sonrası fiziksel ve ruhsal sağlık.' },
-  { name: 'Beslenme', description: 'Anne ve bebek için günlük beslenme, tarifler, ipuçları.' },
+  {
+    name: 'Hamilelik',
+    description: 'Gebelik süreci, doğum öncesi bakım, beslenme ve psikoloji.',
+    subcategories: [
+      { name: 'Hamilelikte Beslenme', description: 'Gebelikte sağlıklı beslenme kuralları ve kilo kontrolü.' },
+      { name: 'Doğum Hazırlığı ve Çantası', description: 'Doğum çantası hazırlığı ve hastane süreci.' },
+      { name: 'Gebelik Şikayetleri ve Sağlık', description: 'Hamilelik dönemindeki yaygın rahatsızlıklar ve çözümleri.' },
+      { name: 'Doğum Yöntemleri ve Süreci', description: 'Normal doğum, sezaryen ve ağrı yönetimi.' },
+      { name: 'Hamilelik Psikolojisi', description: 'Gebelik sürecindeki duygusal değişimler ve ruh sağlığı.' },
+    ],
+  },
+  {
+    name: '0-6 Ay',
+    description: 'Yenidoğan bakımı, ilk aylar, emzirme, uyku.',
+    subcategories: [
+      { name: 'Emzirme ve Anne Sütü', description: 'Doğru emzirme teknikleri ve anne sütünün saklanması.' },
+      { name: 'Yenidoğan Bakımı ve Banyo', description: 'Bebek bakımı, göbek bağı ve ilk banyo.' },
+      { name: 'Bebek Uyku Düzeni', description: 'İlk aylarda uyku alışkanlıkları ve rutinleri.' },
+      { name: 'Gaz Sancısı ve Kolik', description: 'Kolik bebekler için rahatlatma yöntemleri.' },
+      { name: 'Aşılar ve Sağlık Kontrolleri', description: 'İlk 6 ayda yapılması gereken aşılar ve takipleri.' },
+    ],
+  },
+  {
+    name: '6-12 Ay',
+    description: 'Ek gıdaya geçiş, gelişim, ilk dişler.',
+    subcategories: [
+      { name: 'Ek Gıdaya Geçiş ve Beslenme', description: 'BLW yöntemi, ek gıda tarifleri ve beslenme kuralları.' },
+      { name: 'Bebek Uyku Eğitimi', description: 'Sağlıklı uyku eğitimi yöntemleri ve rutinler.' },
+      { name: 'Diş Çıkarma Dönemi', description: 'Diş çıkarma belirtileri ve rahatlatıcı öneriler.' },
+      { name: 'Emekleme ve Motor Beceriler', description: 'Fiziksel gelişim adımları ve destekleyici egzersizler.' },
+      { name: 'Bebek Oyunları ve Oyuncaklar', description: 'Gelişimi destekleyen oyuncak seçimleri ve oyunlar.' },
+    ],
+  },
+  {
+    name: '12-24 Ay',
+    description: 'Yürüme, konuşma, oyun, davranış gelişimi.',
+    subcategories: [
+      { name: 'Konuşma ve Dil Gelişimi', description: 'Konuşma becerilerini destekleyici egzersizler.' },
+      { name: 'Yürüme ve Fiziksel Gelişim', description: 'İlk adımlar ve kaba motor gelişim takipleri.' },
+      { name: 'Tuvalet Eğitimi Hazırlığı', description: 'Tuvalet eğitimine başlama işaretleri ve hazırlık süreci.' },
+      { name: 'İştahsızlık ve Sofra Düzeni', description: '1 yaş üstü çocuklarda beslenme reddi ve sofra alışkanlıkları.' },
+      { name: '2 Yaş Sendromu ve Öfke Nöbetleri', description: 'Gelişimsel öfke nöbetleri ve kriz yönetimi.' },
+    ],
+  },
 ]
 
 const SEED_EXPERTS = [
@@ -49,7 +87,7 @@ const SEED_POSTS: {
     excerpt:
       'Emziren annenin günlük beslenmesi nasıl olmalı? Süt için "mucize" yiyecek var mı? Sade, gerçekçi bir liste.',
     expertiseAuthor: 'diyetisyen',
-    categoryName: '0-6 Ay',
+    categoryName: 'Emzirme ve Anne Sütü',
     content: doc(
       p(
         'Emzirme dönemi, anneye ekstra bir baskı dönemi gibi anlatılır. Aslında temel kural çok basit: ',
@@ -89,7 +127,7 @@ const SEED_POSTS: {
     excerpt:
       'Hastane çantasında gerçekten lazım olanlar ve "olmasa da olur" listesi. Bir ebe gözünden sade bir rehber.',
     expertiseAuthor: 'ebe',
-    categoryName: 'Hamilelik',
+    categoryName: 'Doğum Hazırlığı ve Çantası',
     content: doc(
       p(
         '36. haftadan itibaren çantayı hazır tut. "Her ihtimale karşı" diye dolaba doldurmaya gerek yok — pratik bir çanta, panikten yarısı kadar yer kaplar.',
@@ -128,7 +166,7 @@ const SEED_POSTS: {
     excerpt:
       'Her ateş acil değil, ama hangisi öyle? 0–3 ay, 3–24 ay, 2 yaş üstü için pratik bir karar haritası.',
     expertiseAuthor: 'doktor',
-    categoryName: '6-12 Ay',
+    categoryName: 'Aşılar ve Sağlık Kontrolleri',
     content: doc(
       p(
         'Ateş bir hastalık değil, vücudun bir savunma cevabıdır. Yüksek olması her zaman tehlikeli değildir; düşük olması her zaman güvenli demek değildir. Yaş bandı, ateşi yorumlarken en önemli filtredir.',
@@ -179,8 +217,9 @@ async function seedCategories(payload: Payload): Promise<void> {
   const existing = await payload.count({ collection: 'categories' })
   if (existing.totalDocs > 0) return
   payload.logger.info('Seeding default categories…')
+  let count = 0
   for (const cat of DEFAULT_CATEGORIES) {
-    await payload.create({
+    const parentDoc = await payload.create({
       collection: 'categories',
       data: {
         name: cat.name,
@@ -188,8 +227,24 @@ async function seedCategories(payload: Payload): Promise<void> {
         description: cat.description,
       },
     })
+    count++
+
+    if (cat.subcategories) {
+      for (const sub of cat.subcategories) {
+        await payload.create({
+          collection: 'categories',
+          data: {
+            name: sub.name,
+            slug: slugify(sub.name),
+            description: sub.description,
+            parent: parentDoc.id,
+          },
+        })
+        count++
+      }
+    }
   }
-  payload.logger.info(`Seeded ${DEFAULT_CATEGORIES.length} categories.`)
+  payload.logger.info(`Seeded ${count} categories (including subcategories).`)
 }
 
 async function seedExperts(payload: Payload): Promise<void> {
@@ -225,7 +280,7 @@ const SEED_QUESTIONS: {
       "Bebeğim 4 aylık. İlk üç ay gece 5–6 saat kesintisiz uyuyordu, son iki haftadır gece 1–2 saatte bir uyanıyor. Bir şey mi yanlış yapıyorum? Mama mı az geliyor?",
     askerName: 'Yıldız',
     expertiseAnswerer: 'ebe',
-    categoryName: '0-6 Ay',
+    categoryName: 'Bebek Uyku Düzeni',
     answer: doc(
       p(
         'Yaşadığın çok yaygın — 4 aylık uyku gerilemesi (sleep regression). Mama az geldiğinden değil, bebeğin uyku siklusu olgunlaşıyor: artık daha yetişkin bir uyku düzenine geçiyor ve siklusların arasında kısa uyanıklıklar oluyor.',
@@ -251,7 +306,7 @@ const SEED_QUESTIONS: {
       'Bebeğim 5 aylık olacak, kayınvalidem "bekleme, yoğurt başla" diyor, internette herkes 6 ay diyor. Ne zaman ve neyle başlamak doğru?',
     askerName: 'Selin',
     expertiseAnswerer: 'diyetisyen',
-    categoryName: '6-12 Ay',
+    categoryName: 'Ek Gıdaya Geçiş ve Beslenme',
     answer: doc(
       p(
         "Dünya Sağlık Örgütü ve Sağlık Bakanlığı önerisi: tam 6 ay (180 gün) anne sütüne ek olarak ek gıdaya başlamak. Erken başlamak alerji ve mide–bağırsak sorunları riskini artırabiliyor.",
@@ -349,7 +404,7 @@ const SEED_PRODUCTS: {
   {
     title: 'Doğum çantasında nene ile uzmanın anlaştığı 6 şey',
     expertiseAuthor: 'ebe',
-    categoryName: 'Hamilelik',
+    categoryName: 'Doğum Hazırlığı ve Çantası',
     metaDescription:
       'Hastane çantasında gerçekten lazım olanlar. Ebe gözünden seçilmiş 6 ürün.',
     intro: doc(
