@@ -136,6 +136,14 @@ export const Questions: CollectionConfig = {
       name: 'askerEmail',
       type: 'email',
       required: true,
+      access: {
+        // Field-level guard: collection `read` access only filters which
+        // rows are visible, not which fields come back on those rows. The
+        // generic Payload REST API would otherwise leak this on every
+        // published question without this.
+        read: ({ req: { user } }) =>
+          user?.role === 'admin' || user?.role === 'editor',
+      },
       admin: {
         description:
           'Sadece bildirim için kullanılır. Halka açık sayfada gösterilmez.',

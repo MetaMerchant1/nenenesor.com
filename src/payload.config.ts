@@ -37,6 +37,10 @@ export default buildConfig({
         ? false
         : { rejectUnauthorized: false },
     },
+    // Auto schema-push is fine for local dev, but must never run against
+    // production — use `pnpm migrate:create` / `pnpm migrate` instead.
+    push: process.env.NODE_ENV !== 'production',
+    migrationDir: path.resolve(dirname, 'migrations'),
   }),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
