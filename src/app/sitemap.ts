@@ -31,6 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/sorular`, changeFrequency: 'daily', priority: 0.9 },
     { url: `${SITE_URL}/sorular/sor`, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${SITE_URL}/uzmanlar`, changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${SITE_URL}/gebelik-hesaplama`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/hakkimizda`, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${SITE_URL}/bulten`, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/urunler`, changeFrequency: 'weekly', priority: 0.6 },

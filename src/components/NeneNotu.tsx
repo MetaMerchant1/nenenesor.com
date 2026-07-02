@@ -5,9 +5,14 @@ import { cn } from '@/lib/utils'
 interface NeneNotuProps {
   children: ReactNode
   className?: string
+  label?: string
 }
 
-export function NeneNotu({ children, className }: NeneNotuProps) {
+export function NeneNotu({
+  children,
+  className,
+  label = "— Nene'den",
+}: NeneNotuProps) {
   return (
     <aside
       className={cn(
@@ -19,7 +24,7 @@ export function NeneNotu({ children, className }: NeneNotuProps) {
         {children}
       </div>
       <div className="mt-3 text-xs uppercase tracking-[0.18em] text-nene-ink/60">
-        — Nene&apos;den
+        {label}
       </div>
     </aside>
   )
