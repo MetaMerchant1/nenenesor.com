@@ -9,6 +9,7 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 
 import { ExpertBadge } from '@/components/ExpertBadge'
 import { NeneNotu } from '@/components/NeneNotu'
+import { PostActions } from '@/components/PostActions'
 import { PostCard, type PostCardData } from '@/components/PostCard'
 import { getPayload } from '@/lib/payload'
 import { buildArticleJsonLd, jsonLdScript } from '@/lib/seo'
@@ -190,6 +191,8 @@ export default async function PostDetailPage({
             {date ? <span className="text-nene-ink/50">{date}</span> : null}
           </div>
         </div>
+
+        <PostActions slug={p.slug} title={p.title} className="mt-6" />
       </header>
 
       {p.coverImage?.url ? (
@@ -230,6 +233,17 @@ export default async function PostDetailPage({
             ))}
           </div>
         ) : null}
+
+        <section id="yorumlar" className="mt-12 scroll-mt-24">
+          <h2 className="font-serif text-2xl">Yorumlar</h2>
+          <div className="mt-4 rounded-md border border-nene-mist bg-nene-mist/30 px-5 py-6 text-sm text-nene-ink/70">
+            Yorumlar çok yakında. O zamana kadar aklına takılanı{' '}
+            <Link href="/sorular/sor" className="text-nene-rust">
+              Nene&apos;nin uzmanına sor
+            </Link>
+            .
+          </div>
+        </section>
       </div>
 
       {related.length > 0 ? (
