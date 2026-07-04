@@ -6,6 +6,7 @@ export const Media: CollectionConfig = {
   slug: 'media',
   admin: {
     group: 'Sistem',
+    hidden: ({ user }) => user?.role === 'expert',
   },
   access: {
     read: () => true,

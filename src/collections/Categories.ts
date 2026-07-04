@@ -10,6 +10,7 @@ export const Categories: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'slug', 'parent'],
     group: 'Sistem',
+    hidden: ({ user }) => user?.role === 'expert',
   },
   access: {
     read: () => true,

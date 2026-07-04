@@ -29,6 +29,7 @@ export const Products: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'author', 'category', 'status', 'publishedAt'],
     group: 'İçerik Yönetimi',
+    hidden: ({ user }) => user?.role === 'expert',
   },
   access: {
     read: ({ req: { user } }) => {

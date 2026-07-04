@@ -10,6 +10,7 @@ export const Experts: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'expertise', 'title'],
     group: 'Yönetim',
+    hidden: ({ user }) => user?.role === 'expert',
   },
   access: {
     read: () => true,

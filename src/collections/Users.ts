@@ -10,6 +10,9 @@ export const Users: CollectionConfig = {
     useAsTitle: 'email',
     defaultColumns: ['email', 'name', 'role'],
     group: 'Yönetim',
+    // Editors and experts manage their own profile via /admin/account;
+    // the Users list is admin-only.
+    hidden: ({ user }) => user?.role !== 'admin',
   },
   access: {
     read: isAdminOrSelf,
