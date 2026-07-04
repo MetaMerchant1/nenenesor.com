@@ -46,6 +46,57 @@ const updateAccess: Access = ({ req: { user } }) => {
   return false
 }
 
+// An empty Lexical doc is a single paragraph with no children — treat only
+// docs with real content as an answer.
+function hasAnswerContent(value: unknown): boolean {
+  const root = (
+    value as { root?: { children?: { type?: string; children?: unknown[] }[] } } | null | undefined
+  )?.root
+  if (!root?.children?.length) return false
+  return root.children.some(
+    (node) => node.type !== 'paragraph' || (node.children?.length ?? 0) > 0,
+  )
+}
+
+// Status automation:
+// - assigning an expert moves a pending question to 'assigned'
+// - saving a non-empty answer moves pending/assigned to 'answered'
+// - publishing stamps publishedAt when it is empty
+const applyStatusWorkflow: CollectionBeforeChangeHook = ({
+  data,
+  originalDoc,
+}) => {
+  if (!data) return data
+  const d = data as {
+    status?: string
+    assignedExpert?: unknown
+    answer?: unknown
+    publishedAt?: string
+  }
+  const prev = originalDoc as
+    | { status?: string; assignedExpert?: unknown; answer?: unknown; publishedAt?: string }
+    | undefined
+
+  const status = d.status ?? prev?.status ?? 'pending'
+  const assignedExpert = d.assignedExpert ?? prev?.assignedExpert
+  const answer = d.answer ?? prev?.answer
+
+  let nextStatus = status
+  if (nextStatus === 'pending' && assignedExpert) nextStatus = 'assigned'
+  if (
+    (nextStatus === 'pending' || nextStatus === 'assigned') &&
+    hasAnswerContent(answer)
+  ) {
+    nextStatus = 'answered'
+  }
+  if (nextStatus !== status) d.status = nextStatus
+
+  if (nextStatus === 'published' && !(d.publishedAt ?? prev?.publishedAt)) {
+    d.publishedAt = new Date().toISOString()
+  }
+  return data
+}
+
 // Experts may only move a question to 'answered'. Publishing (which fires the
 // notification email) and rejecting stay with admin/editor.
 const guardExpertStatusChange: CollectionBeforeChangeHook = ({
@@ -124,7 +175,7 @@ export const Questions: CollectionConfig = {
     delete: isAdmin,
   },
   hooks: {
-    beforeChange: [guardExpertStatusChange],
+    beforeChange: [guardExpertStatusChange, applyStatusWorkflow],
     afterChange: [notifyOnPublish],
   },
   fields: [
