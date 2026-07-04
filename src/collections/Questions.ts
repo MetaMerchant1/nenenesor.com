@@ -2,10 +2,13 @@ import { revalidatePath } from 'next/cache'
 import type {
   Access,
   CollectionAfterChangeHook,
+  CollectionBeforeChangeHook,
   CollectionConfig,
 } from 'payload'
+import { APIError } from 'payload'
 
 import { isAdmin } from '@/access/isAdmin'
+import { isAdminOrEditorFieldLevel } from '@/access/isAdminOrEditor'
 import { sendQuestionAnsweredEmail } from '@/lib/resend'
 import { autoSlugFrom } from '@/lib/slug'
 
@@ -41,6 +44,26 @@ const updateAccess: Access = ({ req: { user } }) => {
     }
   }
   return false
+}
+
+// Experts may only move a question to 'answered'. Publishing (which fires the
+// notification email) and rejecting stay with admin/editor.
+const guardExpertStatusChange: CollectionBeforeChangeHook = ({
+  data,
+  originalDoc,
+  operation,
+  req,
+}) => {
+  if (operation !== 'update' || req.user?.role !== 'expert') return data
+  const prev = (originalDoc as { status?: string } | undefined)?.status
+  const next = (data as { status?: string } | undefined)?.status
+  if (next && next !== prev && next !== 'answered') {
+    throw new APIError(
+      'Uzmanlar soruyu yalnızca "Cevaplandı" durumuna alabilir.',
+      403,
+    )
+  }
+  return data
 }
 
 const notifyOnPublish: CollectionAfterChangeHook = async ({
@@ -101,6 +124,7 @@ export const Questions: CollectionConfig = {
     delete: isAdmin,
   },
   hooks: {
+    beforeChange: [guardExpertStatusChange],
     afterChange: [notifyOnPublish],
   },
   fields: [
@@ -108,6 +132,7 @@ export const Questions: CollectionConfig = {
       name: 'questionTitle',
       type: 'text',
       required: true,
+      access: { update: isAdminOrEditorFieldLevel },
       admin: {
         description:
           'Listelerde görünen kısa başlık. İlk cümleden türetilebilir.',
@@ -119,6 +144,7 @@ export const Questions: CollectionConfig = {
       unique: true,
       index: true,
       required: true,
+      access: { update: isAdminOrEditorFieldLevel },
       hooks: { beforeValidate: [autoSlugFrom('questionTitle')] },
       admin: { position: 'sidebar' },
     },
@@ -128,11 +154,13 @@ export const Questions: CollectionConfig = {
       required: true,
       minLength: 50,
       maxLength: 1000,
+      access: { update: isAdminOrEditorFieldLevel },
     },
     {
       name: 'askerName',
       type: 'text',
       defaultValue: 'İsimsiz Anne',
+      access: { update: isAdminOrEditorFieldLevel },
     },
     {
       name: 'askerEmail',
@@ -145,6 +173,7 @@ export const Questions: CollectionConfig = {
         // published question without this.
         read: ({ req: { user } }) =>
           user?.role === 'admin' || user?.role === 'editor',
+        update: isAdminOrEditorFieldLevel,
       },
       admin: {
         description:
@@ -156,12 +185,14 @@ export const Questions: CollectionConfig = {
       name: 'category',
       type: 'relationship',
       relationTo: 'categories',
+      access: { update: isAdminOrEditorFieldLevel },
       admin: { position: 'sidebar' },
     },
     {
       name: 'assignedExpert',
       type: 'relationship',
       relationTo: 'experts',
+      access: { update: isAdminOrEditorFieldLevel },
       admin: { position: 'sidebar' },
     },
     {
@@ -185,6 +216,7 @@ export const Questions: CollectionConfig = {
     {
       name: 'publishedAt',
       type: 'date',
+      access: { update: isAdminOrEditorFieldLevel },
       admin: {
         position: 'sidebar',
         date: { pickerAppearance: 'dayAndTime' },
@@ -193,6 +225,7 @@ export const Questions: CollectionConfig = {
     {
       name: 'seo',
       type: 'group',
+      access: { update: isAdminOrEditorFieldLevel },
       fields: [
         { name: 'metaTitle', type: 'text' },
         { name: 'metaDescription', type: 'textarea' },
